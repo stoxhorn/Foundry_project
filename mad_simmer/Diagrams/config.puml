@@ -1,0 +1,31 @@
+@startjson
+{
+    "contracts":[
+        {
+         "name": "name",
+         "path": "path/to/contract.sol",
+         "deploy arguments": []
+        }
+    ],
+    "users":[
+        "static address from anvil"
+    ],
+    "anvil config": {
+        "port": 1337
+    },
+    "actions": [
+        {
+            "new_block": "boolean",
+            "signer_address": "address",
+            "arguments": ["args"],
+            "function": "function_name",
+            "receiver_address": "address"
+        }
+    ]
+
+
+
+}
+
+
+@endjson

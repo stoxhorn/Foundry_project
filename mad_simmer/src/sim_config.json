@@ -1,0 +1,33 @@
+{
+    "contracts": [
+        {"name": "bitcoin",
+         "contract_name": "MyToken.sol",
+         "deploy_arguments": ["Bitcoin", "BTC"]
+        },
+        {"name": "counter",
+         "contract_name": "counter.sol",
+         "deploy_arguments": []
+        }
+    ],
+    "users":[
+      {"name":  "user1",
+      "address":  "none"
+      }
+    ],
+    "anvil_config": {
+        "port": 5000,
+        "block_time": 1
+    },
+    "actions": [
+      {
+        "new_block": false,
+        "signer_address":  "none",
+        "arguments":  ["empty"],
+        "function":  "none",
+        "receiver_address": "none"
+      }
+    ]
+
+
+
+}

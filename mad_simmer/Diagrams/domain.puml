@@ -1,0 +1,76 @@
+@startuml
+
+stereotype address{
+    address: str
+    transactions: [txn]
+    functions: hashmap<str, function>
+}
+struct user{
+    name: str
+}
+struct txn{
+    actions: [func_call]
+}
+struct func_call{
+    args: [str]
+    func: function
+    result: str
+}
+txn o-- func_call
+
+address *-- user
+address *-- txn
+
+stereotype contract{
+    funcs: hashmap<str,function>
+    vars: hashmap<str,T>
+}
+address *-- contract
+
+struct token{
+    name: str
+    ticker: str
+    meta_data: idk
+}
+struct swap_pool{
+    name: str
+    tokens: <token1, token2>
+    liquidity: hashmap<str, int>
+}
+struct function{
+    args: hashmap<str, type>
+    action: func
+}
+
+contract *-- token
+contract *-- swap_pool
+
+contract o-- "0--*" function
+address o-- "0--*" function
+
+struct network{
+    states: [block]
+    connection: anvil
+    signers: [user]
+}
+network o-- "0..*" user
+struct block{
+    new_txn: [txn]
+    addresses: [address]
+    net_state: network_state
+}
+
+struct network_state{
+    data: json_file
+}
+block o-- network_state
+
+network o-- "0..*" block
+
+block o-- "0..*" txn
+block o-- "0..*" address
+
+
+
+
+@enduml

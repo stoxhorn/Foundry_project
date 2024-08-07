@@ -1,0 +1,147 @@
+
+
+pub struct Token {
+    pub name: String,
+    pub address: alloy::primitives::Address,
+}
+impl Token {
+    pub async fn new(sim: &Sim, name: String, ticker: String) -> Result<Token, Error>{
+        let provider=
+            ProviderBuilder::new().with_recommended_fillers().wallet(&sim.def_wallet).on_http(sim.get_url());
+
+        let bitcoin = MyToken::deploy(provider, name.clone(), ticker).await?;
+        let address = *bitcoin.address();
+        Ok(Token { name, address})
+    }
+    fn from_address(sim: &Sim, name: String, address: Address) -> Token{
+        Token{name, address}
+    }
+
+
+}impl Contract for Token {
+    fn get_type(&self) -> String {
+
+        return "Token".to_string().clone();
+    }
+
+    async fn call_func(&self, func_name: String, sim: &Sim){
+        let provider=
+            ProviderBuilder::new().with_recommended_fillers().wallet(&sim.def_wallet).on_http(sim.get_url());
+        let contract = MyToken::new(self.address.clone(), &provider);
+
+        let future = match func_name.as_str(){
+            "incVar" => Ok(contract.incVar().send().await.expect("called {func_name.as_str()}").watch().await.expect("")),
+            "setVar" => Ok(contract.setVar().send().await.expect("called {func_name.as_str()}").watch().await.expect("")),
+            _ => {Err(()) }
+        };
+
+        let txn_hash = future.unwrap();
+    }
+
+
+    fn get_state(&self) -> HashMap<String, String> {
+        todo!()
+    }
+    fn get_wallet(&self) -> crate::sim_structs::Wallet {
+        todo!()
+    }
+    fn get_address(&self) -> String {
+        self.address.to_string()
+    }
+    fn get_name(&self) -> &String {
+        todo!()
+    }
+}
+
+
+
+pub struct MyCounter {
+    pub name: String,
+    pub address: alloy::primitives::Address,
+}
+impl crate::solidity_files::MyCounter {
+    pub async fn new(sim: &Sim, name: String, ticker: String) -> Result<crate::solidity_files::Token, Error>{
+        let provider=
+            ProviderBuilder::new().with_recommended_fillers().wallet(&sim.def_wallet).on_http(sim.get_url());
+
+        let bitcoin = MyToken::deploy(provider, name.clone(), ticker).await?;
+        let address = *bitcoin.address();
+        Ok(crate::solidity_files::Token { name, address})
+    }
+
+    pub async fn increment(&self, sim: &Sim){
+        let provider=
+            ProviderBuilder::new().with_recommended_fillers().wallet(&sim.def_wallet).on_http(sim.get_url());
+
+        let contract = Counter::new(self.address.clone(), &provider);
+        contract.increment();
+    }
+    fn from_address(sim: &Sim, name: String, address: Address) -> MyCounter{
+        MyCounter{name, address}
+    }
+
+
+}
+impl Contract for crate::solidity_files::MyCounter {
+    fn get_type(&self) -> String {
+
+        return "Token".to_string().clone();
+    }
+    async fn call_func(&self, func_name: String, sim: &Sim){
+
+        let provider=
+            ProviderBuilder::new().with_recommended_fillers().wallet(&sim.def_wallet).on_http(sim.get_url());
+        let contract = Counter::new(self.address.clone(), &provider);
+
+        let future = match func_name.as_str(){
+            "increment" => Ok(contract.increment().send().await.expect("called {func_name.as_str()}").watch().await.expect("")),
+            _ => {Err(())}
+        };
+
+        let txn_hash = future.unwrap();
+    }
+
+    fn get_state(&self) -> HashMap<String, String> {
+        todo!()
+    }
+    fn get_wallet(&self) -> crate::sim_structs::Wallet {
+        todo!()
+    }
+    fn get_address(&self) -> String {
+        self.address.to_string()
+    }
+    fn get_name(&self) -> &String {
+        todo!()
+    }
+}
+
+
+/*
+pub type MyFunction = dyn Fn(&Sim, &Vec<String>);
+
+//map.insert("hello", Box::new(hello));
+
+//println!("{}", map.get("hello").unwrap()());
+//let mut map: HashMap<&str, Box<Ihello>> = HashMap::new();
+
+pub struct StoredContracts {
+    pub funcs: HashMap<String, Box<MyFunction>>,
+} impl StoredContracts {
+    pub fn get_func(&mut self, key: String) -> Box<MyFunction> {
+        let func = self.funcs.get(&key).map(|x| *x).unwrap();
+
+        func
+    }
+    pub async fn new() -> StoredContracts{
+        let mut funcs: HashMap<String, Box<MyFunction>> = HashMap::new();
+        funcs.insert("MyToken".to_string(), Box::new(deploy_MyToken));
+        funcs.insert("Counter".to_string(), Box::new(deploy_Counter));
+
+        StoredContracts {
+            funcs
+        }
+    }
+}
+
+
+*/

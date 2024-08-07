@@ -1,0 +1,48 @@
+@startuml
+
+class reader{
+    data: sim_data
+    
+    read_action()
+    anvil_config()
+    read_contract()
+    read_user()
+}
+
+struct sim_data {
+    users: [user]
+    actions: [action]
+    contracts: [contract]
+    anvil_conf: anvil_config
+}
+
+struct action{
+    new_block: bool,
+    signer_address: str,
+    arguments: [T],
+    function: str,
+    receiver_address: str
+}
+
+struct anvil_config{
+    port: int
+}
+
+struct contract{
+    path: str
+    contents: str
+    deploy_arguments: [str]
+}
+
+struct user{
+    name: str
+    address: str
+}
+
+sim_data o-- "0..*" action
+sim_data o-- "0..*" anvil_config
+sim_data o-- contract
+sim_data o-- "0..*" user
+
+
+@enduml
