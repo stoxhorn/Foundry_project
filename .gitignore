@@ -1,0 +1,8 @@
+_pycache__/
+.idea/
+dependencies/
+lib/
+target/
+*/fraquility/.github
+*/fraquility/.gitignore
+*.json
